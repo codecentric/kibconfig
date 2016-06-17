@@ -1,0 +1,32 @@
+{
+  "name": "kibconfig",
+  "version": "0.1.0",
+  "description": "A small library to sync Kibana config objects (dashboards, visuals, searches, etc...) with a local directory",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "kibconfig": "./index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/codecentric/kibconfig.git"
+  },
+  "keywords": [
+    "kibana",
+    "ELK",
+    "dashboards"
+  ],
+  "author": "Carsten Mjartan <carsten.mjartan@codecentric.de> (https://www.codecentric.de/team/profil/\\?profil\\=cmj)",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/codecentric/kibconfig/issues"
+  },
+  "homepage": "https://github.com/codecentric/kibconfig#readme",
+  "dependencies": {
+    "co": "^4.6.0",
+    "commander": "^2.9.0",
+    "superagent": "^2.0.0"
+  }
+}
