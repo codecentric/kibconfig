@@ -2,14 +2,24 @@ import request from '../lib/promiseRequest';
 import fsp from 'fs-promise';
 
 export default class PullCommand {
-    constructor(program, command, options) {
+    constructor(program, command) {
         this.baseUrl = command.url;
         this.targetDir = './data';
     }
 
+    static register(program) {
+        program
+            .command('pull')
+            .description('Pulls all config objects to a local ./data subfolder')
+            .option('--url <url>', 'Kibana server URL', null, null)
+            .action((command, options) => {
+                new PullCommand(program, command, options).execute();
+            });
+    }
+
     async execute() {
         try {
-            await this.createTargetDirectory();
+            await this.mkdirIfMissing(this.targetDir);
 
             const result = await request
                 .get(`${this.baseUrl}/.kibana/_search?size=1000&q=*`)
@@ -17,7 +27,7 @@ export default class PullCommand {
                 .promise();
             const entries = result.body.hits.hits;
 
-            await this.createDirectories(this.targetDir, entries);
+            await this.createDirectories(entries);
             await Promise.all(entries.map(this.storeEntry.bind(this)));
             process.exit(0);
         } catch (err) {
@@ -26,23 +36,37 @@ export default class PullCommand {
         }
     }
 
-    async createTargetDirectory() {
-        if (!(await fsp.exists(this.targetDir))) {
-            await fsp.mkdir(this.targetDir);
-        }
-    }
-
     async storeEntry(entry) {
         if (entry._type) {
-            const filename = `${this.targetDir}/${entry._type}/${this.idToFilename(entry._id)}.json`;
-            const content = JSON.stringify(this.mapToLocal(entry._source), null, 4);
+            const name = PullCommand.idToFilename(entry._id);
+            const filename = `${this.targetDir}/${entry._type}/${name}.json`;
+            const jsonContent = PullCommand.mapToLocal(entry._source);
+            const content = JSON.stringify(jsonContent, null, 4);
 
             console.log(`Updating ${filename}`);
             await fsp.writeFile(filename, content, 'utf8');
         }
     }
 
-    idToFilename(id) {
+    createDirectories(entries) {
+        const distinctTypes = Array.from(new Set(entries.map(entry => entry._type)));
+
+        return Promise.all(
+            distinctTypes.map(type => this.mkdirIfMissing(`${this.targetDir}/${type}`)));
+    }
+
+    mkdirIfMissing(typeDir) {
+        return fsp.exists(typeDir).then(exists => {
+            let promise = Promise.resolve();
+
+            if (!exists) {
+                promise = fsp.mkdir(typeDir);
+            }
+            return promise;
+        });
+    }
+
+    static idToFilename(id) {
         return id
             .replace('_', '_')
             .replace('*', '_')
@@ -50,21 +74,7 @@ export default class PullCommand {
             .replace(')', '_');
     }
 
-
-    async createDirectories(targetDir, entries) {
-        for (let i = 0; i < entries.length; i++) {
-            const type = entries[i]._type;
-            const typeDir = `${targetDir}/${type}`;
-
-            if (!(await fsp.exists(typeDir))) {
-                console.log(`Creating directory ${typeDir}`);
-                await fsp.mkdir(typeDir);
-            }
-        }
-        return entries;
-    }
-
-    mapToLocal(source) {
+    static mapToLocal(source) {
         const target = JSON.parse(JSON.stringify(source));
 
         if (target.panelsJSON) {

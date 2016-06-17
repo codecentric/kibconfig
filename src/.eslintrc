@@ -1,9 +1,25 @@
 {
     "extends": "airbnb-base",
     "parser": "babel-eslint",
+    "plugins": [
+        "babel"
+    ],
     "rules": {
         "no-console": 0,
+
+        // changes from airbnb
         "no-underscore-dangle": 0,
-        "indent": ["error", 4]
+        "indent": ["error", 4],
+        "max-len": ["error", 120],
+
+        // es7 features
+        "babel/generator-star-spacing": 1,
+        "babel/new-cap": 1,
+        "babel/array-bracket-spacing": 1,
+        "babel/object-curly-spacing": 1,
+        "babel/object-shorthand": 1,
+        "babel/arrow-parens": [1, "as-needed"],
+        "babel/no-await-in-loop": 1,
+        "babel/flow-object-type": 1
     }
 }
