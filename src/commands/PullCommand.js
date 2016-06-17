@@ -55,15 +55,12 @@ export default class PullCommand {
             distinctTypes.map(type => this.mkdirIfMissing(`${this.targetDir}/${type}`)));
     }
 
-    mkdirIfMissing(typeDir) {
-        return fsp.exists(typeDir).then(exists => {
-            let promise = Promise.resolve();
+    async mkdirIfMissing(typeDir) {
+        const exists = await fsp.exists(typeDir);
 
-            if (!exists) {
-                promise = fsp.mkdir(typeDir);
-            }
-            return promise;
-        });
+        if (!exists) {
+            await fsp.mkdir(typeDir);
+        }
     }
 
     static idToFilename(id) {
