@@ -48,7 +48,6 @@ export default class PullCommand {
 
             console.log(`Updating ${filename}`);
             await fsp.writeFile(filename, content, 'utf8');
-            await fsp.writeFile(filename + '.entry', JSON.stringify(entry, null, 2), 'utf8');
         }
     }
 
