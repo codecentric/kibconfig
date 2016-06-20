@@ -2,18 +2,16 @@ import request from '../lib/promiseRequest';
 import fsp from 'fs-promise';
 
 export default class PullCommand {
-    constructor(program, command) {
-        this.baseUrl = command.url;
-        this.query = command.query;
-        this.targetDir = './data';
+    constructor(program) {
+        this.baseUrl = program.url;
+        this.query = program.query || '*';
+        this.dataDir = program.datadir || './data';
     }
 
     static register(program) {
         program
             .command('pull')
-            .description('Pulls all config objects to a local ./data subfolder')
-            .option('--url <url>', 'Kibana server URL', null, null)
-            .option('--query <query>', 'Search Query for entry IDs', null, '*')
+            .description('Pulls all config objects to the local <datadir>')
             .action((command, options) => {
                 new PullCommand(program, command, options).execute();
             });
@@ -21,7 +19,7 @@ export default class PullCommand {
 
     async execute() {
         try {
-            await this.mkdirIfMissing(this.targetDir);
+            await this.mkdirIfMissing(this.dataDir);
 
             const url = `${this.baseUrl}/.kibana/_search?size=1000&q=${this.query}`;
             console.log(`Querying via ${url}`);
@@ -44,12 +42,13 @@ export default class PullCommand {
     async storeEntry(entry) {
         if (entry._type) {
             const name = PullCommand.idToFilename(entry._id);
-            const filename = `${this.targetDir}/${entry._type}/${name}.json`;
-            const jsonContent = PullCommand.mapToLocal(entry._source);
+            const filename = `${this.dataDir}/${entry._type}/${name}.json`;
+            const jsonContent = PullCommand.mapToLocal(entry);
             const content = JSON.stringify(jsonContent, null, 4);
 
             console.log(`Updating ${filename}`);
             await fsp.writeFile(filename, content, 'utf8');
+            await fsp.writeFile(filename + '.entry', JSON.stringify(entry, null, 2), 'utf8');
         }
     }
 
@@ -57,7 +56,7 @@ export default class PullCommand {
         const distinctTypes = Array.from(new Set(entries.map(entry => entry._type)));
 
         return Promise.all(
-            distinctTypes.map(type => this.mkdirIfMissing(`${this.targetDir}/${type}`)));
+            distinctTypes.map(type => this.mkdirIfMissing(`${this.dataDir}/${type}`)));
     }
 
     async mkdirIfMissing(typeDir) {
@@ -76,25 +75,42 @@ export default class PullCommand {
             .replace(')', '_');
     }
 
-    static mapToLocal(source) {
-        const target = JSON.parse(JSON.stringify(source));
+    static mapToLocal(entry) {
+        const source = entry._source;
+        const target = Object.assign(
+                { id: entry._id },
+                JSON.parse(JSON.stringify(source))
+            );
 
-        if (target.panelsJSON) {
-            target.panelsJSON = PullCommand.sortByKey(JSON.parse(target.panelsJSON));
+        if (target.visState) {
+            target.visState = PullCommand.sortByKey(JSON.parse(target.visState));
         }
-        if (target.kibanaSavedObjectMeta && target.kibanaSavedObjectMeta.searchSourceJSON) {
-            target.kibanaSavedObjectMeta.searchSourceJSON =
-                PullCommand.sortByKey(JSON.parse(target.kibanaSavedObjectMeta.searchSourceJSON));
+        PullCommand.replaceJsonWithJs(target);
+        if (target.kibanaSavedObjectMeta) {
+            PullCommand.replaceJsonWithJs(target.kibanaSavedObjectMeta);
         }
         return target;
     }
 
-    static sortByKey(unordered) {
-        const ordered = {};
-
-        Object.keys(unordered).sort().forEach(function(key) {
-            ordered[key] = unordered[key];
+    static replaceJsonWithJs(target) {
+        Object.keys(target).forEach(key => {
+            if (key.endsWith('JSON')) {
+                target[key] = PullCommand.sortByKey(JSON.parse(target[key])); // eslint-disable-line no-param-reassign
+            }
         });
-        return ordered;
+    }
+
+    static sortByKey(unordered) {
+        if (unordered instanceof Array) {
+            return unordered.map(entry => PullCommand.sortByKey(entry));
+        } else if (typeof unordered === 'object') {
+            const ordered = {};
+
+            Object.keys(unordered).sort().forEach(key => {
+                ordered[key] = PullCommand.sortByKey(unordered[key]);
+            });
+            return ordered;
+        }
+        return unordered;
     }
 }
