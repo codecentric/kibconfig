@@ -4,6 +4,7 @@ import fsp from 'fs-promise';
 export default class PullCommand {
     constructor(program, command) {
         this.baseUrl = command.url;
+        this.query = command.query;
         this.targetDir = './data';
     }
 
@@ -12,6 +13,7 @@ export default class PullCommand {
             .command('pull')
             .description('Pulls all config objects to a local ./data subfolder')
             .option('--url <url>', 'Kibana server URL', null, null)
+            .option('--query <query>', 'Search Query for entry IDs', null, '*')
             .action((command, options) => {
                 new PullCommand(program, command, options).execute();
             });
@@ -21,8 +23,11 @@ export default class PullCommand {
         try {
             await this.mkdirIfMissing(this.targetDir);
 
+            const url = `${this.baseUrl}/.kibana/_search?size=1000&q=${this.query}`;
+            console.log(`Querying via ${url}`);
+
             const result = await request
-                .get(`${this.baseUrl}/.kibana/_search?size=1000&q=*`)
+                .get(url)
                 .set('Accept', 'application/json')
                 .promise();
             const entries = result.body.hits.hits;
@@ -75,12 +80,21 @@ export default class PullCommand {
         const target = JSON.parse(JSON.stringify(source));
 
         if (target.panelsJSON) {
-            target.panelsJSON = JSON.parse(target.panelsJSON);
+            target.panelsJSON = PullCommand.sortByKey(JSON.parse(target.panelsJSON));
         }
         if (target.kibanaSavedObjectMeta && target.kibanaSavedObjectMeta.searchSourceJSON) {
             target.kibanaSavedObjectMeta.searchSourceJSON =
-                JSON.parse(target.kibanaSavedObjectMeta.searchSourceJSON);
+                PullCommand.sortByKey(JSON.parse(target.kibanaSavedObjectMeta.searchSourceJSON));
         }
         return target;
+    }
+
+    static sortByKey(unordered) {
+        const ordered = {};
+
+        Object.keys(unordered).sort().forEach(function(key) {
+            ordered[key] = unordered[key];
+        });
+        return ordered;
     }
 }
