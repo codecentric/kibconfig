@@ -6,6 +6,18 @@ import createConfig from './lib/createConfig';
 import DataDirectory from './lib/DataDirectory';
 import * as util from 'util';
 
+function execute(command) {
+    command
+        .execute()
+        .then(() => {
+            process.exit(0);
+        })
+        .catch(err => {
+            console.error(err);
+            process.exit(1);
+        });
+}
+
 program
     .option('--datadir <datadir>', 'Set data dir', null, './data')
     .option('--url <url>', 'Kibana server URL', null, null)
@@ -20,7 +32,9 @@ program
         const config = createConfig(program, command, options);
         const client = new KibanaClient(config);
         const dataDirectory = new DataDirectory(config);
-        new PullCommand(config, client, dataDirectory).execute();
+        const cmd = new PullCommand(config, client, dataDirectory);
+
+        execute(cmd);
     });
 
 program
@@ -30,7 +44,9 @@ program
         const config = createConfig(program, command, options);
         const client = new KibanaClient(config);
         const dataDirectory = new DataDirectory(config);
-        new PushCommand(config, client, dataDirectory).execute();
+        const cmd = new PushCommand(config, client, dataDirectory);
+
+        execute(cmd);
     });
 
 program

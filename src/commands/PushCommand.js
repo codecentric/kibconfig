@@ -9,11 +9,7 @@ export default class PushCommand {
     }
 
     async execute() {
-        try {
-            await this.upload();
-        } catch (err) {
-            console.error(err);
-        }
+        await this.upload();
     }
 
     async upload() {

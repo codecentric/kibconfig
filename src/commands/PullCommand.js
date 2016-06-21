@@ -8,15 +8,9 @@ export default class PullCommand {
     }
 
     async execute() {
-        try {
-            const entries = await this.client.findAll();
+        const entries = await this.client.findAll();
 
-            await Promise.all(entries.map(this.storeEntry.bind(this)));
-            process.exit(0);
-        } catch (err) {
-            console.error(err);
-            process.exit(1);
-        }
+        await Promise.all(entries.map(this.storeEntry.bind(this)));
     }
 
     async storeEntry(entry) {
