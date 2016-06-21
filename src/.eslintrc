@@ -12,11 +12,13 @@
         "indent": ["error", 4],
         "max-len": ["error", 120],
         "object-curly-spacing": 0,
+        "array-bracket-spacing": 0,
+        "comma-dangle": [1, "never"],
 
         // es7 features
         "babel/generator-star-spacing": 1,
         "babel/new-cap": 1,
-        "babel/array-bracket-spacing": 1,
+        "babel/array-bracket-spacing": [1, "always"],
         "babel/object-curly-spacing": [1, "always"],
         "babel/object-shorthand": 1,
         "babel/arrow-parens": [1, "as-needed"],

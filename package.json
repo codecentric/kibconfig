@@ -28,8 +28,9 @@
   "homepage": "https://github.com/codecentric/kibconfig#readme",
   "dependencies": {
     "commander": "^2.9.0",
-    "superagent": "^2.0.0",
-    "fs-promise": "latest"
+    "find-config": "^1.0.0",
+    "fs-promise": "latest",
+    "superagent": "^2.0.0"
   },
   "devDependencies": {
     "babel-cli": "^6.10.1",
