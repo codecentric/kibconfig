@@ -16,6 +16,39 @@ npm link
 
 see `kibconfig --help`
 
+## Configuration
+
+You can create a `.kibconfig` file in any upstream directory to contain the configuration:
+
+```
+{
+    "url": "http://localhost:9200",
+    "datadir": "kibana",
+    "verbose": true
+}
+```
+
+Config attributes correspond to the parameters that are shown via `kibconfig --help`.
+
+You can also maintain different profiles, for example to maintain different stages:
+
+```
+{
+    "profiles": {
+        "preprod": {
+            "url": "http://my-pre-production-server:9200",
+            "datadir": "preprod",
+            "verbose": true
+        },
+        "production": {
+            "url": "http://my-production-server:9200",
+            "datadir": "production",
+            "verbose": true
+        }
+    }
+}
+```
+
 ## Build yourself
 
 Run ES6 code directly:
