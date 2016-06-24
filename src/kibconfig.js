@@ -1,10 +1,13 @@
 import program from 'commander';
-import PullCommand from './commands/PullCommand';
-import PushCommand from './commands/PushCommand';
+import util from 'util';
+
 import KibanaClient from './lib/KibanaClient';
 import createConfig from './lib/createConfig';
 import DataDirectory from './lib/DataDirectory';
-import * as util from 'util';
+
+import PullCommand from './commands/PullCommand';
+import PushCommand from './commands/PushCommand';
+import DeleteCommand from './commands/DeleteCommand';
 
 function execute(command) {
     command
@@ -45,6 +48,17 @@ program
         const client = new KibanaClient(config);
         const dataDirectory = new DataDirectory(config);
         const cmd = new PushCommand(config, client, dataDirectory);
+
+        execute(cmd);
+    });
+
+program
+    .command('delete [profile]')
+    .description('Deletes all config objects specified by query the remote server')
+    .action((command, options) => {
+        const config = createConfig(program, command, options);
+        const client = new KibanaClient(config);
+        const cmd = new DeleteCommand(config, client);
 
         execute(cmd);
     });

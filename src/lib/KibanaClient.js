@@ -14,7 +14,7 @@ export default class KibanaClient {
     }
 
     findAll() {
-        const url = `${this.url}/.kibana/_search?size=1000&q=${this.query}`;
+        const url = `${this.url}/.kibana/_search?size=1000&q=${encodeURIComponent(this.query)}`;
 
         if (this.verbose) {
             console.log(`Querying via ${url}`);
@@ -25,6 +25,21 @@ export default class KibanaClient {
             .set('Accept', 'application/json')
             .promise()
             .then(result => result.body.hits.hits);
+    }
+
+    delete(type, id) {
+        const url = `${this.url}/.kibana/${type}/${id}`;
+
+        if (this.verbose) {
+            console.log(`Deleting ${url}`);
+        }
+
+        return request
+            .delete(url)
+            .promise()
+            .then(() => {
+                return { type, id };
+            });
     }
 
     upload(type, id, body) {
