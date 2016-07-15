@@ -43,7 +43,7 @@ export default class KibanaClient {
     }
 
     upload(type, id, body) {
-        const url = `${this.url}/.kibana/${type}/${id}`;
+        const url = `${this.url}/.kibana/${type}/${encodeURIComponent(id)}`;
 
         if (this.verbose) {
             console.log(`Uploading to ${url}`);
@@ -55,6 +55,9 @@ export default class KibanaClient {
             .promise()
             .then(() => {
                 return { id, body };
+            }).catch(err => {
+                console.error(`Error uploading ${url}: ${err.message}`);
+                throw err;
             });
     }
 }
