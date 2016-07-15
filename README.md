@@ -4,12 +4,9 @@ A small utility to sync Kibana config objects (dashboards, visuals, searches, et
 
 ## Installation
 
-To install (currently):
+To install:
 ```
-git clone https://github.com/codecentric/kibconfig.git
-cd kibconfig
-npm install -g
-npm link
+npm install -g kibconfig
 ```
 
 ## Usage
