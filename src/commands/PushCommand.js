@@ -1,5 +1,7 @@
-import fsp from 'fs-promise';
 import Mapper from '../lib/Mapper';
+import promiseLimit from 'promise-limit';
+
+const MAX_CONCURRENT_CONNECTIONS = 20;
 
 export default class PushCommand {
     constructor(config, client, dataDirectory) {
@@ -14,8 +16,9 @@ export default class PushCommand {
 
     async upload() {
         const files = await this.dataDirectory.findAll();
+        const limit = promiseLimit(MAX_CONCURRENT_CONNECTIONS);
 
-        await Promise.all(files.map(this.uploadElement.bind(this)));
+        await Promise.all(files.map(file => limit(() => this.uploadElement(file))));
         return files;
     }
 

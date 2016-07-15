@@ -33,6 +33,7 @@
     "commander": "^2.9.0",
     "find-config": "^1.0.0",
     "fs-promise": "latest",
+    "promise-limit": "^2.2.0",
     "superagent": "^2.0.0"
   },
   "devDependencies": {
