@@ -1,4 +1,5 @@
-import * as fsp from 'fs-promise';
+import fsp from 'fs-promise';
+import fs from 'fs';
 
 export default class DataDirectory {
     constructor(config) {
@@ -12,7 +13,6 @@ export default class DataDirectory {
         const updatedDashboards = await this.findElementsOfType('dashboard');
 
         return [ ...updatedSearches, ...updatedVisualizations, ...updatedDashboards ];
-
     }
 
     async store(type, id, jsonContent) {
@@ -25,16 +25,16 @@ export default class DataDirectory {
             console.log(`Updating ${filename}`);
         }
 
-        await this.mkdirIfMissing(this.datadir);
-        await this.mkdirIfMissing(typedir);
+        this.mkdirIfMissing(this.datadir);
+        this.mkdirIfMissing(typedir);
         await fsp.writeFile(filename, content, 'utf8');
     }
 
-    async mkdirIfMissing(path) {
-        const exists = await fsp.exists(path);
+    mkdirIfMissing(path) {
+        const exists = fs.existsSync(path);
 
         if (!exists) {
-            await fsp.mkdir(path);
+            fs.mkdirSync(path);
         }
     }
 
