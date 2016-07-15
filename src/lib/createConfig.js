@@ -17,7 +17,7 @@ function coalesce(...args) {
     return value;
 }
 
-export default function createConfig(program, profileName) {
+export function _createConfig(program, profileName, config) {
     const profile = profileName ? config.profiles[profileName] : {};
 
     if (!profile) {
@@ -36,5 +36,9 @@ export default function createConfig(program, profileName) {
         delete: coalesce(program.delete, profile.delete, config.delete, false),
         verbose: coalesce(program.verbose, profile.verbose, config.verbose, false)
     };
+}
+
+export default function createConfig(program, profileName) {
+    return _createConfig(program, profileName, config);
 }
 
