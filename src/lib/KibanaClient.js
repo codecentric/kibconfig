@@ -37,9 +37,7 @@ export default class KibanaClient {
         return request
             .delete(url)
             .promise()
-            .then(() => {
-                return { type, id };
-            });
+            .then(() => ({ type, id }));
     }
 
     upload(type, id, body) {
@@ -53,9 +51,8 @@ export default class KibanaClient {
             .put(url)
             .send(body)
             .promise()
-            .then(() => {
-                return { id, body };
-            }).catch(err => {
+            .then(() => ({ id, body }))
+            .catch(err => {
                 console.error(`Error uploading ${url}: ${err.message}`);
                 throw err;
             });

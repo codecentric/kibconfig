@@ -3,7 +3,7 @@ import fs from 'fs';
 import path from 'path';
 
 const configFile = findConfig('.kibconfig');
-const config = configFile ? JSON.parse(fs.readFileSync(configFile, 'utf-8')) : { profiles: {} };
+const configFromFile = configFile ? JSON.parse(fs.readFileSync(configFile, 'utf-8')) : { profiles: {} };
 
 function coalesce(...args) {
     let value = undefined;
@@ -39,6 +39,6 @@ export function _createConfig(program, profileName, config) {
 }
 
 export default function createConfig(program, profileName) {
-    return _createConfig(program, profileName, config);
+    return _createConfig(program, profileName, configFromFile);
 }
 
