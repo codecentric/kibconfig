@@ -1,7 +1,8 @@
 import { expect } from 'chai';
 import sinon from 'sinon';
 import nock from 'nock';
-import KibanaClient from '../../src/lib/KibanaClient';
+import KibanaClient from '../../../src/lib/KibanaClient';
+import Samples from '../Samples';
 
 describe('KibanaClient', () => {
     let config,
@@ -18,20 +19,7 @@ describe('KibanaClient', () => {
         exampleEntry = {
             key: 'value'
         };
-        exampleHits = [
-            {
-                _id: 'id1',
-                _type: 'search',
-                _source: exampleEntry
-            },
-            {
-                _id: 'id2',
-                _type: 'visualization',
-                _source: {
-                    key: 'value'
-                }
-            }
-        ];
+        exampleHits = Samples.exampleHits();
         exampleResponse = {
             hits: {
                 hits: exampleHits

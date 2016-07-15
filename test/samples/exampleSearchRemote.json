@@ -1,0 +1,24 @@
+{
+    "_index": ".kibana",
+    "_type": "search",
+    "_id": "all-errors",
+    "_score": 1,
+    "_source": {
+        "title": "All errors",
+        "description": "",
+        "hits": 0,
+        "columns": [
+            "hostname",
+            "level",
+            "message"
+        ],
+        "sort": [
+            "timestamp",
+            "desc"
+        ],
+        "version": 1,
+        "kibanaSavedObjectMeta": {
+            "searchSourceJSON": "{\"filter\":[{\"meta\":{\"disabled\":false,\"index\":\"json*\",\"key\":\"category\",\"negate\":false,\"value\":\"ExpressServer\"},\"query\":{\"match\":{\"category\":{\"query\":\"ExpressServer\",\"type\":\"phrase\"}}}}],\"highlight\":{\"fields\":{\"*\":{}},\"fragment_size\":2147483647,\"post_tags\":[\"@/kibana-highlighted-field@\"],\"pre_tags\":[\"@kibana-highlighted-field@\"]},\"index\":\"json*\",\"query\":{\"query_string\":{\"analyze_wildcard\":true,\"query\":\"level: 'error'\"}}}"
+        }
+    }
+}

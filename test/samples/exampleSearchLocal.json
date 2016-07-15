@@ -1,0 +1,58 @@
+{
+    "columns": [
+        "hostname",
+        "level",
+        "message"
+    ],
+    "description": "",
+    "hits": 0,
+    "id": "all-errors",
+    "kibanaSavedObjectMeta": {
+        "searchSourceJSON": {
+            "filter": [
+                {
+                    "meta": {
+                        "disabled": false,
+                        "index": "json*",
+                        "key": "category",
+                        "negate": false,
+                        "value": "ExpressServer"
+                    },
+                    "query": {
+                        "match": {
+                            "category": {
+                                "query": "ExpressServer",
+                                "type": "phrase"
+                            }
+                        }
+                    }
+                }
+            ],
+            "highlight": {
+                "fields": {
+                    "*": {}
+                },
+                "fragment_size": 2147483647,
+                "post_tags": [
+                    "@/kibana-highlighted-field@"
+                ],
+                "pre_tags": [
+                    "@kibana-highlighted-field@"
+                ]
+            },
+            "index": "json*",
+            "query": {
+                "query_string": {
+                    "analyze_wildcard": true,
+                    "query": "level: 'error'"
+                }
+            }
+        }
+    },
+    "sort": [
+        "timestamp",
+        "desc"
+    ],
+    "title": "All errors",
+    "version": 1
+}
