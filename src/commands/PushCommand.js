@@ -10,8 +10,8 @@ export default class PushCommand {
         this.dataDirectory = dataDirectory;
     }
 
-    async execute() {
-        await this.upload();
+    execute() {
+        return this.upload();
     }
 
     async upload() {

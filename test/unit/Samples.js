@@ -10,6 +10,21 @@ export default class Samples {
         ];
     }
 
+    static exampleFiles() {
+        return [
+            {
+                id: 'id1',
+                type: 'search',
+                content: Object.assign({}, exampleSearchLocalJson, { id: 'id1' })
+            },
+            {
+                id: 'id2',
+                type: 'search',
+                content: Object.assign({}, exampleSearchLocalJson, { id: 'id2' })
+            }
+        ];
+    }
+
     static exampleSearchLocal() {
         return Samples.clone(exampleSearchLocalJson);
     }
