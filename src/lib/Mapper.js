@@ -48,7 +48,9 @@ export default class Mapper {
     }
 
     static sortByKey(unordered) {
-        if (unordered instanceof Array) {
+        if (unordered === null) {
+            return null;
+        } else if (unordered instanceof Array) {
             return unordered.map(entry => Mapper.sortByKey(entry));
         } else if (typeof unordered === 'object') {
             const ordered = {};

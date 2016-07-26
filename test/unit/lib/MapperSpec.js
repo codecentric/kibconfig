@@ -19,6 +19,20 @@ describe('Mapper', () => {
         it('should replace nested JSON strings with parsed counterparts', () => {
             expect(typeof result.kibanaSavedObjectMeta.searchSourceJSON).to.equal('object');
         });
+        it('should handle null values correctly', () => {
+            const hit = Samples.exampleSearchRemote(),
+                searchSource = JSON.parse(hit._source.kibanaSavedObjectMeta.searchSourceJSON),
+                local = Samples.exampleSearchLocal();
+
+            searchSource.filter[0].meta.alias = null;
+            local.kibanaSavedObjectMeta.searchSourceJSON.filter[0].meta.alias = null;
+
+            hit._source.kibanaSavedObjectMeta.searchSourceJSON = JSON.stringify(searchSource);
+
+            const result = Mapper.mapToLocal(hit);
+
+            expect(result).to.deep.equal(local);
+        });
     });
 
     describe('mapToRemote', () => {

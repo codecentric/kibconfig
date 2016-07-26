@@ -13,11 +13,15 @@ npm install -g kibconfig
 
 see `kibconfig --help`
 
+## First steps
+
+Start by creating a `.kibconfig` file in a new empty directory. You'll probably
+
 ## Configuration
 
 You can create a `.kibconfig` file in any upstream directory to contain the configuration:
 
-```
+```json
 {
     "url": "http://localhost:9200",
     "datadir": "kibana",
@@ -29,7 +33,7 @@ Config attributes correspond to the parameters that are shown via `kibconfig --h
 
 You can also maintain different profiles, for example to maintain different stages:
 
-```
+```json
 {
     "profiles": {
         "preprod": {
@@ -58,7 +62,7 @@ Compile es6 code for publish:
 
 Re-Install it locally:
 
-```
+```bash
 # Don't forget to unlink first
 npm unlink
 npm install -g
