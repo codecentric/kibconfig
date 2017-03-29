@@ -59,7 +59,12 @@ export default class DataDirectory {
     }
 
     async loadFile(type, name) {
-        const text = await fsp.readFile(`${this.datadir}/${type}/${name}`, 'utf8');
+        const path = `${this.datadir}/${type}/${name}`;
+        if (this.verbose) {
+            console.log(`Loading ${path}`);
+        }
+
+        const text = await fsp.readFile(path, 'utf8');
         const content = JSON.parse(text);
         const id = content.id;
 
