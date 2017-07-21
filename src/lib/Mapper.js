@@ -2,49 +2,36 @@
 export default class Mapper {
     static mapToLocal(entry) {
         const source = entry._source;
-        const target = Object.assign(
-            { id: entry._id },
-            JSON.parse(JSON.stringify(source))
-        );
 
-        if (target.visState) {
-            target.visState = Mapper.sortByKey(JSON.parse(target.visState));
-        }
-        Mapper.replaceJsonWithJs(target);
-        if (target.kibanaSavedObjectMeta) {
-            Mapper.replaceJsonWithJs(target.kibanaSavedObjectMeta);
-        }
-        return target;
+        return Mapper.removeUndefined(Mapper.replaceJsonWithJs({
+            ...source,
+            id: entry._id,
+            visState: source.visState ? Mapper.sortByKey(source.visState) : undefined,
+            kibanaSavedObjectMeta: Mapper.replaceJsonWithJs(source.kibanaSavedObjectMeta)
+        }));
     }
 
     static mapToRemote(content) {
-        const target = JSON.parse(JSON.stringify(content));
-
-        delete target.id;
-        if (target.visState) {
-            target.visState = JSON.stringify(target.visState);
-        }
-        Mapper.replaceJsWithJson(target);
-        if (target.kibanaSavedObjectMeta) {
-            Mapper.replaceJsWithJson(target.kibanaSavedObjectMeta);
-        }
-        return target;
+        return Mapper.removeUndefined(Mapper.replaceJsWithJson({
+            ...content,
+            id: undefined,
+            visState: JSON.stringify(content.visState),
+            kibanaSavedObjectMeta: Mapper.replaceJsWithJson(content.kibanaSavedObjectMeta)
+        }));
     }
 
     static replaceJsonWithJs(target) {
-        Object.keys(target).forEach(key => {
-            if (key.endsWith('JSON')) {
-                target[key] = Mapper.sortByKey(JSON.parse(target[key])); // eslint-disable-line no-param-reassign
-            }
-        });
+        return Object.keys(target).reduce((converted, key) => ({
+            ...converted,
+            [key]: key.endsWith('JSON') ? Mapper.sortByKey(JSON.parse(target[key])) : target[key]
+        }), {});
     }
 
     static replaceJsWithJson(target) {
-        Object.keys(target).forEach(key => {
-            if (key.endsWith('JSON')) {
-                target[key] = JSON.stringify(target[key]); // eslint-disable-line no-param-reassign
-            }
-        });
+        return Object.keys(target).reduce((converted, key) => ({
+            ...converted,
+            [key]: key.endsWith('JSON') ? JSON.stringify(target[key]) : target[key]
+        }), {});
     }
 
     static sortByKey(unordered) {
@@ -53,13 +40,15 @@ export default class Mapper {
         } else if (unordered instanceof Array) {
             return unordered.map(entry => Mapper.sortByKey(entry));
         } else if (typeof unordered === 'object') {
-            const ordered = {};
-
-            Object.keys(unordered).sort().forEach(key => {
-                ordered[key] = Mapper.sortByKey(unordered[key]);
-            });
-            return ordered;
+            return Object.keys(unordered).sort().reduce((ordered, key) => ({
+                ...ordered,
+                [key]: Mapper.sortByKey(unordered[key])
+            }), {});
         }
         return unordered;
+    }
+
+    static removeUndefined(obj) {
+        return JSON.parse(JSON.stringify(obj));
     }
 }

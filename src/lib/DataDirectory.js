@@ -70,4 +70,11 @@ export default class DataDirectory {
 
         return { id, type, content };
     }
+
+    clone(entry) {
+        return {
+            ...entry,
+            content: JSON.parse(JSON.stringify(entry.content))
+        };
+    }
 }

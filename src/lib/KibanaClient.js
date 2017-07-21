@@ -1,5 +1,5 @@
-import request from '../lib/promiseRequest';
 import assert from 'assert';
+import * as request from 'superagent';
 
 export default class KibanaClient {
     constructor(config) {
@@ -23,7 +23,6 @@ export default class KibanaClient {
         return request
             .get(url)
             .set('Accept', 'application/json')
-            .promise()
             .then(result => result.body.hits.hits);
     }
 
@@ -36,7 +35,6 @@ export default class KibanaClient {
 
         return request
             .delete(url)
-            .promise()
             .then(() => ({ type, id }));
     }
 
@@ -50,7 +48,6 @@ export default class KibanaClient {
         return request
             .put(url)
             .send(body)
-            .promise()
             .then(() => ({ id, body }))
             .catch(err => {
                 console.error(`Error uploading ${url}: ${err.message}`);

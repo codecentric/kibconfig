@@ -8,6 +8,7 @@ import DataDirectory from './lib/DataDirectory';
 import PullCommand from './commands/PullCommand';
 import PushCommand from './commands/PushCommand';
 import DeleteCommand from './commands/DeleteCommand';
+import CopyCommand from './commands/CopyCommand';
 
 function execute(command) {
     command
@@ -21,6 +22,15 @@ function execute(command) {
         });
 }
 
+function multiValueOption() {
+    const list = [];
+    const add = val => {
+        list.push(val);
+        return list;
+    };
+
+    return add;
+}
 program
     .option('--datadir <datadir>', 'Set data dir', null, './data')
     .option('--url <url>', 'Kibana server URL', null, null)
@@ -31,8 +41,8 @@ program
 program
     .command('pull [profile]')
     .description('Pulls all config objects to the local <datadir>')
-    .action((command, options) => {
-        const config = createConfig(program, command, options);
+    .action((profile, options) => {
+        const config = createConfig(program, profile, options);
         const client = new KibanaClient(config);
         const dataDirectory = new DataDirectory(config);
         const cmd = new PullCommand(config, client, dataDirectory);
@@ -43,8 +53,8 @@ program
 program
     .command('push [profile]')
     .description('Pushes all local config objects to the remote server')
-    .action((command, options) => {
-        const config = createConfig(program, command, options);
+    .action((profile, options) => {
+        const config = createConfig(program, profile, options);
         const client = new KibanaClient(config);
         const dataDirectory = new DataDirectory(config);
         const cmd = new PushCommand(config, client, dataDirectory);
@@ -55,8 +65,8 @@ program
 program
     .command('delete [profile]')
     .description('Deletes all config objects specified by query the remote server')
-    .action((command, options) => {
-        const config = createConfig(program, command, options);
+    .action((profile, options) => {
+        const config = createConfig(program, profile, options);
         const client = new KibanaClient(config);
         const cmd = new DeleteCommand(config, client);
 
@@ -64,10 +74,25 @@ program
     });
 
 program
+    .command('copy <profile> <type> <id>')
+    .description('Copies the given exported file into a new location replacing it\'s ID')
+    .option('--deep', 'Deep copy', null)
+    .option('--replace <pattern>:<replacement>', 'Replacement', multiValueOption())
+    .option('--ignore <id>,...', 'Ignored IDs', null)
+    .option('--dry-run', 'Dry run', null)
+    .action((profile, type, id, options) => {
+        const config = createConfig(program, profile, options);
+        const dataDirectory = new DataDirectory(config);
+        const cmd = new CopyCommand(config, dataDirectory, type, id, options);
+
+        execute(cmd);
+    });
+
+program
     .command('config [profile]')
     .description('Displays the used configuration')
-    .action((command, options) => {
-        const config = createConfig(program, command, options);
+    .action((profile, options) => {
+        const config = createConfig(program, profile, options);
 
         console.log(util.inspect(config, { depth: null }));
     });
