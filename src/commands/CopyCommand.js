@@ -1,5 +1,5 @@
 
-export default class PullCommand {
+export default class CopyCommand {
     constructor(config, dataDirectory, type, id, options) {
         this.config = config;
         this.dataDirectory = dataDirectory;
