@@ -6,7 +6,7 @@ export default class Mapper {
         return Mapper.removeUndefined(Mapper.replaceJsonWithJs({
             ...source,
             id: entry._id,
-            visState: source.visState ? Mapper.sortByKey(source.visState) : undefined,
+            visState: source.visState ? source.visState : undefined,
             kibanaSavedObjectMeta: Mapper.replaceJsonWithJs(source.kibanaSavedObjectMeta)
         }));
     }
@@ -23,7 +23,7 @@ export default class Mapper {
     static replaceJsonWithJs(target) {
         return Object.keys(target).reduce((converted, key) => ({
             ...converted,
-            [key]: key.endsWith('JSON') ? Mapper.sortByKey(JSON.parse(target[key])) : target[key]
+            [key]: key.endsWith('JSON') ? JSON.parse(target[key]) : target[key]
         }), {});
     }
 
@@ -32,20 +32,6 @@ export default class Mapper {
             ...converted,
             [key]: key.endsWith('JSON') ? JSON.stringify(target[key]) : target[key]
         }), {});
-    }
-
-    static sortByKey(unordered) {
-        if (unordered === null) {
-            return null;
-        } else if (unordered instanceof Array) {
-            return unordered.map(entry => Mapper.sortByKey(entry));
-        } else if (typeof unordered === 'object') {
-            return Object.keys(unordered).sort().reduce((ordered, key) => ({
-                ...ordered,
-                [key]: Mapper.sortByKey(unordered[key])
-            }), {});
-        }
-        return unordered;
     }
 
     static removeUndefined(obj) {

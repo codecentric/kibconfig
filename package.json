@@ -4,8 +4,8 @@
   "description": "A small library to sync Kibana config objects (dashboards, visuals, searches, etc...) with a local directory",
   "main": "index.js",
   "scripts": {
-    "build": "npm run test && npm run compile",
-    "test": "npm run lint && npm run test:unit",
+    "build": "yarn run test && npm run compile",
+    "test": "yarn run lint && npm run test:unit",
     "test:unit": "mocha test/unit",
     "test:watch": "mocha test/unit -w",
     "lint": "eslint src",
@@ -23,7 +23,7 @@
     "ELK",
     "dashboards"
   ],
-  "author": "Carsten Mjartan <carsten.mjartan@codecentric.de> (https://www.codecentric.de/team/profil/\\?profil\\=cmj)",
+  "author": "Carsten Rohrbach <carsten.rohrbach@codecentric.de> (https://www.codecentric.de/team/profil/\\?profil\\=cmj)",
   "license": "GPL-3.0",
   "bugs": {
     "url": "https://github.com/codecentric/kibconfig/issues"
@@ -34,6 +34,7 @@
     "commander": "^2.9.0",
     "find-config": "^1.0.0",
     "fs-promise": "latest",
+    "json-stable-stringify": "^1.0.1",
     "promise-limit": "^2.2.0",
     "superagent": "^2.0.0"
   },

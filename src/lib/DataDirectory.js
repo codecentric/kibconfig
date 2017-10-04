@@ -1,5 +1,8 @@
 import fsp from 'fs-promise';
 import fs from 'fs';
+import stringify from 'json-stable-stringify';
+
+const PROPERTY_ORDER = [ 'id', 'title', 'type' ];
 
 export default class DataDirectory {
     constructor(config) {
@@ -16,7 +19,10 @@ export default class DataDirectory {
     }
 
     async store(type, id, jsonContent) {
-        const content = JSON.stringify(jsonContent, null, 4);
+        const content = stringify(jsonContent, {
+            cmp: (a, b) => this.compare(a, b),
+            space: 4
+        });
         const typedir = `${this.datadir}/${type}`;
         const name = DataDirectory.idToFilename(id);
         const filename = `${typedir}/${name}.json`;
@@ -76,5 +82,23 @@ export default class DataDirectory {
             ...entry,
             content: JSON.parse(JSON.stringify(entry.content))
         };
+    }
+
+    compare(a, b) {
+        for (const name of PROPERTY_ORDER) {
+            if (a.key === name) {
+                return -1;
+            }
+            if (b.key === name) {
+                return 1;
+            }
+        }
+        if (typeof a.value === 'object' && typeof b.value !== 'object') {
+            return 1;
+        }
+        if (typeof b.value === 'object' && typeof a.value !== 'object') {
+            return -1;
+        }
+        return a.key < b.key ? -1 : 1;
     }
 }
