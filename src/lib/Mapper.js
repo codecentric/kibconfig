@@ -6,7 +6,7 @@ export default class Mapper {
         return Mapper.removeUndefined(Mapper.replaceJsonWithJs({
             ...source,
             id: entry._id,
-            visState: source.visState ? source.visState : undefined,
+            visState: source.visState ? JSON.parse(source.visState) : undefined,
             kibanaSavedObjectMeta: Mapper.replaceJsonWithJs(source.kibanaSavedObjectMeta)
         }));
     }
