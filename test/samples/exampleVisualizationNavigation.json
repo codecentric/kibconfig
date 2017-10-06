@@ -1,0 +1,28 @@
+{
+    "id": "Navigation",
+    "title": "Navigation",
+    "description": "",
+    "version": 1,
+    "kibanaSavedObjectMeta": {
+        "searchSourceJSON": {
+            "filter": [
+            ],
+            "query": {
+                "query_string": {
+                    "analyze_wildcard": true,
+                    "query": "*"
+                }
+            }
+        }
+    },
+    "visState": {
+        "type": "markdown",
+        "aggs": [
+        ],
+        "listeners": {
+        },
+        "params": {
+            "markdown": "### This is markdown syntax"
+        }
+    }
+}

@@ -6,7 +6,7 @@ const configFile = findConfig('.kibconfig');
 const configFromFile = configFile ? JSON.parse(fs.readFileSync(configFile, 'utf-8')) : { profiles: {} };
 
 function coalesce(...args) {
-    let value = undefined;
+    let value;
 
     for (const arg of args) {
         if (arg !== null && arg !== undefined) {

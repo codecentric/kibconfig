@@ -1,0 +1,57 @@
+{
+    "id": "Example-Dashboard",
+    "title": "Example Dashboard",
+    "description": "",
+    "hits": 0,
+    "timeRestore": false,
+    "version": 1,
+    "kibanaSavedObjectMeta": {
+        "searchSourceJSON": {
+            "filter": [
+                {
+                    "query": {
+                        "query_string": {
+                            "analyze_wildcard": true,
+                            "query": "*"
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "panelsJSON": [
+        {
+            "id": "Navigation",
+            "type": "visualization",
+            "col": 1,
+            "row": 1,
+            "size_x": 2,
+            "size_y": 5
+        },
+        {
+            "id": "Example-all-errors",
+            "type": "search",
+            "col": 3,
+            "row": 1,
+            "size_x": 10,
+            "size_y": 4,
+            "columns": [
+                "hostname",
+                "category",
+                "message"
+            ],
+            "sort": [
+                "timestamp",
+                "desc"
+            ]
+        },
+        {
+            "id": "Example-Log-count-by-level",
+            "type": "visualization",
+            "col": 3,
+            "row": 5,
+            "size_x": 10,
+            "size_y": 4
+        }
+    ]
+}

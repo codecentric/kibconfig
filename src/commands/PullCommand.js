@@ -20,6 +20,4 @@ export default class PullCommand {
             await this.dataDirectory.store(entry._type, entry._id, jsonContent);
         }
     }
-
-
 }

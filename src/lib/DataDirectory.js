@@ -20,7 +20,7 @@ export default class DataDirectory {
 
     async store(type, id, jsonContent) {
         const content = stringify(jsonContent, {
-            cmp: (a, b) => this.compare(a, b),
+            cmp: DataDirectory.compare,
             space: 4
         });
         const typedir = `${this.datadir}/${type}`;
@@ -31,12 +31,12 @@ export default class DataDirectory {
             console.log(`Updating ${filename}`);
         }
 
-        this.mkdirIfMissing(this.datadir);
-        this.mkdirIfMissing(typedir);
+        DataDirectory.mkdirIfMissing(this.datadir);
+        DataDirectory.mkdirIfMissing(typedir);
         await fsp.writeFile(filename, content, 'utf8');
     }
 
-    mkdirIfMissing(path) {
+    static mkdirIfMissing(path) {
         const exists = fs.existsSync(path);
 
         if (!exists) {
@@ -59,7 +59,7 @@ export default class DataDirectory {
         if (exists) {
             const files = (await fsp.readdir(directory)).filter(name => name.endsWith('.json'));
 
-            return await Promise.all(files.map(this.loadFile.bind(this, type)));
+            return Promise.all(files.map(this.loadFile.bind(this, type)));
         }
         return [];
     }
@@ -72,19 +72,19 @@ export default class DataDirectory {
 
         const text = await fsp.readFile(path, 'utf8');
         const content = JSON.parse(text);
-        const id = content.id;
+        const { id } = content;
 
         return { id, type, content };
     }
 
-    clone(entry) {
+    static clone(entry) {
         return {
             ...entry,
             content: JSON.parse(JSON.stringify(entry.content))
         };
     }
 
-    compare(a, b) {
+    static compare(a, b) {
         for (const name of PROPERTY_ORDER) {
             if (a.key === name) {
                 return -1;

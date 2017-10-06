@@ -1,14 +1,12 @@
 import { expect } from 'chai';
 import sinon from 'sinon';
-import nock from 'nock';
 import DeleteCommand from '../../../src/commands/DeleteCommand';
 import Samples from '../Samples';
-import Mapper from '../../../src/lib/Mapper';
 
 describe('DeleteCommand', () => {
-    let config,
-        clientStub,
-        command;
+    let config;
+    let clientStub;
+    let command;
 
     beforeEach(() => {
         config = {};
@@ -32,8 +30,6 @@ describe('DeleteCommand', () => {
     });
 
     it('should fail if search fails', () => {
-        const hits = Samples.exampleHits();
-
         clientStub.findAll.rejects(new Error('findAll fails'));
 
         return command.execute().catch(err => {

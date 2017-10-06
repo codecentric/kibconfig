@@ -1,0 +1,42 @@
+{
+    "id": "Example-all-logs",
+    "title": "Example - all logs",
+    "description": "",
+    "hits": 0,
+    "version": 1,
+    "columns": [
+        "loglevel",
+        "hostname",
+        "message"
+    ],
+    "kibanaSavedObjectMeta": {
+        "searchSourceJSON": {
+            "index": "json*",
+            "filter": [
+            ],
+            "highlight": {
+                "fragment_size": 2147483647,
+                "fields": {
+                    "*": {
+                    }
+                },
+                "post_tags": [
+                    "@/kibana-highlighted-field@"
+                ],
+                "pre_tags": [
+                    "@kibana-highlighted-field@"
+                ]
+            },
+            "query": {
+                "query_string": {
+                    "analyze_wildcard": true,
+                    "query": "*"
+                }
+            }
+        }
+    },
+    "sort": [
+        "timestamp",
+        "desc"
+    ]
+}

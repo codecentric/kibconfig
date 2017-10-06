@@ -1,15 +1,14 @@
 import { expect } from 'chai';
 import sinon from 'sinon';
-import nock from 'nock';
 import PullCommand from '../../../src/commands/PullCommand';
 import Samples from '../Samples';
 import Mapper from '../../../src/lib/Mapper';
 
 describe('PullCommand', () => {
-    let config,
-        clientStub,
-        dataDirectoryStub,
-        command;
+    let config;
+    let clientStub;
+    let dataDirectoryStub;
+    let command;
 
     beforeEach(() => {
         config = {};
@@ -35,8 +34,6 @@ describe('PullCommand', () => {
     });
 
     it('should fail if findAll fails', () => {
-        const hits = Samples.exampleHits();
-
         clientStub.findAll.rejects(new Error('findAll fails'));
 
         return command.execute().should.be.rejectedWith('findAll fails');

@@ -9,12 +9,14 @@ export default class CopyCommand {
         this.ignores = (options.ignore || '').split(',');
         this.deep = options.deep;
         this.dryRun = options.dryRun;
-        console.log(options.replace);
 
         this.changedEntries = [];
     }
 
     async execute() {
+        if (this.replacements.length === 0) {
+            throw new Error('No replacements specified - skipping copy');
+        }
         this.entries = await this.dataDirectory.findAll();
 
         this.copy(this.type, this.id);
@@ -126,9 +128,7 @@ export default class CopyCommand {
     }
 
     storeChanges() {
-        return Promise.all(
-            this.changedEntries.map(entry => this.dataDirectory.store(entry.type, entry.id, entry.content)
-                    .then(() => console.log(`Wrote ${entry.type} ${entry.id} to data directory`)))
-        );
+        return Promise.all(this.changedEntries.map(entry => this.dataDirectory.store(entry.type, entry.id, entry.content)
+            .then(() => console.log(`Wrote ${entry.type} ${entry.id} to data directory`))));
     }
 }
