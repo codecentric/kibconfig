@@ -21,6 +21,9 @@ export default class Mapper {
     }
 
     static replaceJsonWithJs(target) {
+        if (target === undefined || target === null) {
+            return target;
+        }
         return Object.keys(target).reduce((converted, key) => ({
             ...converted,
             [key]: key.endsWith('JSON') ? JSON.parse(target[key]) : target[key]
@@ -28,6 +31,9 @@ export default class Mapper {
     }
 
     static replaceJsWithJson(target) {
+        if (target === undefined || target === null) {
+            return target;
+        }
         return Object.keys(target).reduce((converted, key) => ({
             ...converted,
             [key]: key.endsWith('JSON') ? JSON.stringify(target[key]) : target[key]
