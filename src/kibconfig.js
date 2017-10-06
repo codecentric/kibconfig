@@ -75,7 +75,12 @@ program
 
 program
     .command('copy <profile> <type> <id>')
-    .description('Copies the given exported file into a new location replacing it\'s ID')
+    .description(`Copies the given exported file into a new location replacing it's ID.
+
+  Examples:
+
+    $ kibconfig copy pp dashboard Existing-dashboard --replace '^Existing:New'
+    $ kibconfig copy --deep pp dashboard Existing-dashboard --replace '^Existing:New' --ignore 'Navigation,Footer' --dry-run`)
     .option('--deep', 'Deep copy', null)
     .option('--replace <pattern>:<replacement>', 'Replacement', multiValueOption())
     .option('--ignore <id>,...', 'Ignored IDs', null)
