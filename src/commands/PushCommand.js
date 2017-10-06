@@ -1,5 +1,5 @@
-import Mapper from '../lib/Mapper';
 import promiseLimit from 'promise-limit';
+import Mapper from '../lib/Mapper';
 
 const MAX_CONCURRENT_CONNECTIONS = 20;
 

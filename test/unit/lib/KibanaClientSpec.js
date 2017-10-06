@@ -1,15 +1,14 @@
 import { expect } from 'chai';
-import sinon from 'sinon';
 import nock from 'nock';
 import KibanaClient from '../../../src/lib/KibanaClient';
 import Samples from '../Samples';
 
 describe('KibanaClient', () => {
-    let config,
-        exampleHits,
-        exampleResponse,
-        exampleEntry,
-        client;
+    let config;
+    let exampleHits;
+    let exampleResponse;
+    let exampleEntry;
+    let client;
 
     beforeEach(() => {
         config = {
@@ -48,19 +47,18 @@ describe('KibanaClient', () => {
     it('should delete a given config object by type and id', () => {
         const request = nock('http://myserver:9200').delete('/.kibana/search/id1').reply(200);
 
-        return client.delete('search', 'id1').then(hits => {
+        return client.delete('search', 'id1').then(() => {
             request.done();
         });
     });
 
     it('should upload a given config object', () => {
         const request = nock('http://myserver:9200')
-                .put('/.kibana/search/id1', exampleEntry)
-                .reply(200);
+            .put('/.kibana/search/id1', exampleEntry)
+            .reply(200);
 
-        return client.upload('search', 'id1', exampleEntry).then(hits => {
+        return client.upload('search', 'id1', exampleEntry).then(() => {
             request.done();
         });
     });
-
 });

@@ -58,13 +58,13 @@ Run ES6 code directly:
 
 Compile es6 code for publish:
 
-`npm run compile`
+`yarn run compile`
 
-Re-Install it locally:
+Re-Install it locally after local updates:
 
 ```bash
 # Don't forget to unlink first
-npm unlink
-npm install -g
-npm link
+yarn unlink
+yarn build
+yarn link
 ```

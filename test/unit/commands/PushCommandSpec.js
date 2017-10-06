@@ -1,15 +1,14 @@
 import { expect } from 'chai';
 import sinon from 'sinon';
-import nock from 'nock';
 import PushCommand from '../../../src/commands/PushCommand';
 import Samples from '../Samples';
 import Mapper from '../../../src/lib/Mapper';
 
 describe('PushCommand', () => {
-    let config,
-        clientStub,
-        dataDirectoryStub,
-        command;
+    let config;
+    let clientStub;
+    let dataDirectoryStub;
+    let command;
 
     beforeEach(() => {
         config = {};
